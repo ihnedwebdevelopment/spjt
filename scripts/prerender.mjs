@@ -5,10 +5,10 @@ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false}
 try {
  const {prerender}=await server.ssrLoadModule('/src/entry-server.js');
  const template=await readFile('dist/index.html','utf8');
- const routes=['index',...services.map(s=>s.slug),'realizace','kontakt','lokality-jihlava-vysocina','404'];
+ const routes=['index',...services.map(s=>s.slug),'realizace','nas-pristup','kontakt','lokality-jihlava-vysocina','404'];
  for(const route of routes){
-  const {body,head}=prerender(route==='index'?'/':`/${route}.html`);
-  const original=await readFile(`original/${route}.html`,'utf8');
+  const {body,head}=prerender(route==='index'?'/':`/${route}`);
+  const original=await readFile(`original/${route}.html`,'utf8').catch(()=>readFile('original/index.html','utf8'));
   const schemaMatch=original.match(/<script type="application\/ld\+json">(.*?)<\/script>/s);
   let schema='';
   if(schemaMatch){

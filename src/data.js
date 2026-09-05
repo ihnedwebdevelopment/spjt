@@ -24,3 +24,44 @@ export const faqs = [
  ['Pracujete i mimo Jihlavu?','Ano, jezdíme do okolí Jihlavy a podle rozsahu zakázky i do dalších částí Vysočiny. Konkrétní místo a termín spolu domluvíme.'],
  ['Děláte betonové stěrky a benátský štuk?','Ano. Vhodný povrch, strukturu a odstín vybereme podle prostoru, světla a požadovaného výsledku.']
 ];
+
+/* ------------------------------------------------------------------
+   Nový obsah pro rozšířený web.
+------------------------------------------------------------------ */
+
+export const shades = [
+ {name:'Čistá bílá',hex:'#f2f1ee',tone:'light',note:'Nadčasová volba do každé místnosti.'},
+ {name:'Teplý len',hex:'#e3d8c6',tone:'light',note:'Měkké přírodní světlo bez chladu.'},
+ {name:'Šalvějová',hex:'#bcc6b5',tone:'light',note:'Klidný odstín do ložnic a pracoven.'},
+ {name:'Písková hlína',hex:'#c9a98a',tone:'mid',note:'Teplý zemitý tón k dřevu.'},
+ {name:'Hluboká modř',hex:'#2f4a71',tone:'dark',note:'Výrazná stěna, která drží pozornost.'},
+ {name:'Grafit',hex:'#4a4e55',tone:'dark',note:'Elegantní kontrast k bílým detailům.'}
+];
+
+export const timeline = [
+ {num:'01',title:'Ozvěte se',text:'Stačí pár fotografií, lokalita a přibližná velikost plochy. Nebo rovnou zavolejte a popište to vlastními slovy.',points:['Telefon, SMS i formulář','Odpověď obvykle do dvou dnů','Nic vás k ničemu nezavazuje']},
+ {num:'02',title:'Domluvíme rozsah',text:'Upřesníme postup, materiál i termín. U větších zakázek se přijedeme podívat na místo a změříme skutečný stav.',points:['Prohlídka na místě zdarma','Rozsah i cena písemně','Termín, který sedne vašemu provozu']},
+ {num:'03',title:'Připravíme prostor',text:'Zakryjeme podlahy a nábytek, ochráníme hrany a detaily. Podklad opravíme, přebrousíme a napenetrujeme.',points:['Ochrana vybavení a podlah','Tmelení, broušení, penetrace','Denní úklid pracoviště']},
+ {num:'04',title:'Odvedeme práci a předáme',text:'Natřeme, zkontrolujeme hrany i přechody a prostor předáme uklizený. Na výsledek se spolu podíváme společně.',points:['Kontrola odstínu i detailů','Úklid po dokončení','Společné převzetí na místě']}
+];
+
+export const promises = [
+ {title:'Cena, na kterou se spolehnete',text:'Rozsah i částku si odsouhlasíme předem. Když se během práce něco změní, ozveme se dřív, než to uděláme.'},
+ {title:'Jeden člověk, se kterým mluvíte',text:'Domlouváte se přímo s řemeslníkem, který u vás bude pracovat. Žádné předávání informací přes tři lidi.'},
+ {title:'Váš domov zůstane váš',text:'Zakrýváme, uklízíme a pracujeme tak, abyste doma mohli normálně fungovat i během zakázky.'},
+ {title:'Materiál podle povrchu',text:'Barvu i systém volíme podle podkladu a provozu místnosti, ne podle toho, co zrovna zbylo ve skladu.'},
+ {title:'Detaily rozhodují',text:'Hrany, přechody, rámy a sokly kontrolujeme na světle i proti světlu, dokud nejsou čisté.'},
+ {title:'Když něco nesedí, opravíme to',text:'Při předání si výsledek projdeme společně. Co se vám nebude líbit, doladíme.'}
+];
+
+export const materials = [
+ {title:'Interiérové barvy',text:'Otěruvzdorné disperze do obytných místností i provozů s vysokou zátěží.'},
+ {title:'Dekorativní systémy',text:'Betonové stěrky, benátský štuk a strukturované povrchy s ochranným finišem.'},
+ {title:'Fasádní nátěry',text:'Silikonové a silikátové systémy podle podkladu, orientace a stavu domu.'},
+ {title:'Nátěry kovu a dřeva',text:'Základ, mezivrstva a finiš zvolené podle namáhání konkrétní konstrukce.'}
+];
+
+/* Sem doplňte skutečné reference zákazníků, např.:
+   {text:'...', author:'Jana N.', place:'Jihlava'}
+   Dokud je pole prázdné, web zobrazí sekci se sliby místo recenzí. */
+export const testimonials = [];

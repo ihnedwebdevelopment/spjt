@@ -1,5 +1,10 @@
 node_modules/
 dist/
 .svelte-kit/
+.vite/
 .env*
 .DS_Store
+*.local
+
+# Vnořený repozitář jiného projektu — na GitHub tohoto webu nepatří.
+spejtek/
