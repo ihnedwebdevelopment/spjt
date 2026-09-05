@@ -32,7 +32,7 @@
 <svelte:window onkeydown={(e)=>{if(e.key==='Escape')menuOpen=false;if(photoDialog?.open){if(e.key==='ArrowRight')stepPhoto(1);if(e.key==='ArrowLeft')stepPhoto(-1);}}}/>
 
 {#snippet brand(light=false)}
- <a class:light class="brand" href="/" aria-label="Špejtek — úvodní stránka"><img class="brand-symbol" src="/assets/img/logo-mark-spejtek.svg" alt=""/><span class="brand-name">ŠPEJTEK<span>Malířství & natěračství</span></span></a>
+ <a class:light class="brand" href="/" aria-label="Špejtek — úvodní stránka"><img class="brand-symbol" src="/assets/img/spejtek-roller.svg" alt=""/><span class="brand-name">ŠPEJTEK<span>Malířství & natěračství</span></span></a>
 {/snippet}
 {#snippet quoteButton(text='Nezávazná poptávka',extra='')}
  <button class={`btn ${extra}`} onclick={openQuote}>{text}<ArrowUpRight size={19}/></button>
