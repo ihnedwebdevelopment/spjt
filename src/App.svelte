@@ -1,4 +1,13 @@
 <script>
+ import { onMount } from 'svelte';
+ onMount(() => {
+   let stopped = false;
+   let dispose;
+   import('./motion.js').then(({ mountMotion }) => {
+     if (!stopped) dispose = mountMotion(document.getElementById('app'));
+   }).catch((error) => console.warn('Animace se nepodařilo načíst.', error));
+   return () => { stopped = true; dispose?.(); };
+ });
  import { ArrowUpRight, ArrowRight, MessageSquare, CalendarCheck, House, Brush, Layers, Wrench, Phone, Menu, X, Check, MapPin, PaintRoller, ShieldCheck, MoveHorizontal, ChevronLeft, ChevronRight } from 'lucide-svelte';
  import { services, projects, faqs } from './data.js';
  let { path = '/' } = $props();

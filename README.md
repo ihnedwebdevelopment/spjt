@@ -29,3 +29,5 @@ Build vytvoří 11 předrenderovaných HTML stránek ve složce `dist`. Původn�
 Poptávkový formulář připraví text ke kontrole a otevření SMS na +420 602 581 542; nic se automaticky neodesílá a údaje se neukládají na server. Uživatel může text také zkopírovat. Odeslání i fotografie dokončí ve své aplikaci pro zprávy.
 
 Produkční doména v kanonických odkazech zůstává `https://malirstvi-spejtek.net`. Soukromý Sites náhled nepřepojuje původní doménu.
+
+Scroll animace zajišťuje GSAP a ScrollTrigger v `src/motion.js`, načítané až na klientovi. Karty a sekce se odkrývají jednou; fotografie mají na desktopu jemný parallax. `prefers-reduced-motion` vypíná animace, mobil používá kratší a menší pohyb. Při odpojení komponenty se animace a posluchače uklidí.
