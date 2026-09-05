@@ -1,6 +1,6 @@
 # Malířství Špejtek — nový design
 
-Web v Svelte 5, Vite a Tailwind CSS 4. Vlastní design s lokálně uloženými fonty Manrope a Cormorant Garamond. Používá původní fotografie firmy.
+Web v Svelte 5, Vite a Tailwind CSS 4. Modrobílý design s lokálně uloženým písmem Manrope, centrálním úvodem, fotografickým pásem a službami v kartách. Dekorativní číslování není použito. Používá původní fotografie firmy.
 
 ## Spuštění
 
