@@ -8,3 +8,6 @@ dist/
 
 # Vnořený repozitář jiného projektu — na GitHub tohoto webu nepatří.
 spejtek/
+
+# Náhodně naklonovaný cílový repozitář — nepatří dovnitř projektu.
+spjt/
