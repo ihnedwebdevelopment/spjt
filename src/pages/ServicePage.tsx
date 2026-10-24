@@ -44,8 +44,8 @@ export default function ServicePage({ s }: { s: Service }) {
               <h2>{works.length === 1 ? 'Ukázka z mé práce' : 'Ukázky z mé práce'}</h2>
               <p className="lead">Skutečné zakázky, nafocené přímo na místě. U dvojic před a po táhněte jezdcem.</p>
             </header>
-            <div className="gal">
-              {works.map((r) => <GalleryCard key={r.id} r={{ ...r, wide: works.length > 1 ? r.wide : true }} />)}
+            <div className={'gal' + (works.length <= 2 ? ' gal-few' : '')}>
+              {works.map((r) => <GalleryCard key={r.id} r={works.length <= 2 ? { ...r, wide: false } : r} />)}
             </div>
           </div>
         </section>

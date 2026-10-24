@@ -186,9 +186,8 @@ em { font-style: normal; color: var(--blue); }
 /* ───────── realizace ───────── */
 .gal { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-flow: dense; gap: 14px; }
 .gal-cell.wide { grid-column: span 2; }
-.gal-cell, .gal-item { height: 100%; }
 .gal-item { position: relative; margin: 0; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 4 / 4.4; background: var(--paper-2); isolation: isolate; }
-.gal-cell.wide .gal-item { aspect-ratio: auto; min-height: 100%; }
+.gal-cell.wide .gal-item { aspect-ratio: 2.04 / 1.1; } /* vlastní poměr stran – nezávisí na sousední kartě */
 .gal-media { position: absolute; inset: -4% 0; will-change: transform; }
 .gal-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .gal-item figcaption { position: absolute; inset: auto 0 0 0; z-index: 3; padding: 64px 20px 18px; color: #fff; background: linear-gradient(transparent, rgba(10,18,36,.72)); display: grid; gap: 2px; pointer-events: none; }
@@ -200,7 +199,12 @@ em { font-style: normal; color: var(--blue); }
 .gal-divider i { position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
 .gal-range { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
 .gal-item:has(.gal-range:focus-visible), .try-visual:has(.gal-range:focus-visible) { outline: 2px solid var(--blue); outline-offset: 3px; }
-@media (max-width: 900px) { .gal { grid-template-columns: repeat(2, 1fr); } .gal-cell.wide { grid-column: span 2; } .gal-cell.wide .gal-item { aspect-ratio: 16 / 11; min-height: 0; } }
+/* stránky služeb s 1–2 ukázkami: plná šířka bez prázdných sloupců */
+.gal-few { grid-template-columns: repeat(2, 1fr); }
+.gal-few .gal-item { aspect-ratio: 4 / 3.3; }
+.gal-few .gal-cell:only-child { grid-column: 1 / -1; }
+.gal-few .gal-cell:only-child .gal-item { aspect-ratio: 2.04 / 1.1; }
+@media (max-width: 900px) { .gal { grid-template-columns: repeat(2, 1fr); } .gal-cell.wide { grid-column: span 2; } .gal-cell.wide .gal-item { aspect-ratio: 16 / 11; } }
 @media (max-width: 560px) { .gal { grid-template-columns: 1fr; } .gal-cell.wide { grid-column: auto; } .gal-item, .gal-cell.wide .gal-item { aspect-ratio: 4 / 3.6; } }
 
 /* ───────── služby ───────── */
