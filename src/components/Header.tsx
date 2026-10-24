@@ -29,13 +29,13 @@ export default function Header() {
           <span className="logo-text">Špejtek<small>Malířství &amp; natěračství</small></span>
         </Link>
         <nav className={'nav' + (open ? ' open' : '')} aria-label="Hlavní menu">
-          <Link to="/#sluzby">Služby</Link>
           <Link to="/#realizace">Realizace</Link>
-          <NavLink to="/vizualizator">3D vizualizátor</NavLink>
-          <Link to="/#pristup">Postup</Link>
+          <Link to="/#sluzby">Služby</Link>
+          <NavLink to="/vizualizator">Vyzkoušet barvy</NavLink>
+          <Link to="/#pristup">O mně</Link>
           <NavLink to="/kontakt">Kontakt</NavLink>
           <a className="nav-phone" href={`tel:${BUSINESS.phoneTel}`}><Icon name="phone" size={16} />{BUSINESS.phoneDisplay}</a>
-          <Link className="cta" to="/kontakt">Poptat zakázku</Link>
+          <Link className="cta" to="/kontakt">Nezávazně poptat</Link>
         </nav>
         <button className="burger" aria-label={open ? 'Zavřít menu' : 'Otevřít menu'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span /><span />

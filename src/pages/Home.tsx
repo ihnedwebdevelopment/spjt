@@ -11,8 +11,8 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Services />
       <Gallery />
+      <Services />
       <FinishLab />
       <Visualizer />
       <Process />

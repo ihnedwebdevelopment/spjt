@@ -1,5 +1,4 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import Reveal from './Reveal'
 import { webglSupported } from '../lib/webgl'
 import { swatchDataURL } from '../lib/textures'
 
@@ -31,7 +30,7 @@ export default function FinishLab() {
   return (
     <section className="section" id="sterky">
       <div className="wrap finish">
-        <Reveal>
+        <div>
           <div className="finish-stage" ref={ref}>
             {gl && near ? (
               <Suspense fallback={null}>
@@ -40,27 +39,27 @@ export default function FinishLab() {
             ) : (
               <img src={swatchDataURL(opt.id, hex, 800, 700)} alt={opt.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             )}
-            <span className="hint">{gl ? 'Hýbejte myší – světlo vás následuje' : opt.label}</span>
+            <span className="hint">{gl ? 'Hýbejte myší, světlo vás následuje' : opt.label}</span>
           </div>
-        </Reveal>
+        </div>
         <div className="finish-copy">
-          <Reveal><span className="eyebrow">Dekorativní povrchy</span></Reveal>
-          <Reveal delay={0.05}><h2>Povrch, který se chce <em>dotýkat</em></h2></Reveal>
-          <Reveal delay={0.1}>
+          <h2>Stěrky zblízka</h2>
+          <p className="lead">Betonová stěrka, benátský štuk a zlatý efekt dělám ručně, v několika vrstvách. Pohybujte myší a sledujte, jak světlo klouže po struktuře.</p>
+          <div>
             <div className="pills" role="group" aria-label="Typ povrchu">
               {FINISH_OPTIONS.map((o, n) => (
                 <button key={o.id} className="pill" aria-pressed={idx === n} onClick={() => { setIdx(n); setColorIdx(0) }}>{o.label}</button>
               ))}
             </div>
-          </Reveal>
-          <Reveal delay={0.15}><p className="lead">{opt.text}</p></Reveal>
-          <Reveal delay={0.2}>
+          </div>
+          <p className="finish-note">{opt.text}</p>
+          <div>
             <div className="swatch-row" role="group" aria-label="Odstín">
               {opt.colors.map((c, n) => (
                 <button key={c} aria-label={'Odstín ' + c} aria-pressed={colorIdx === n} style={{ background: c }} onClick={() => setColorIdx(n)} />
               ))}
             </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

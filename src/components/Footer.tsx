@@ -9,10 +9,10 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <div className="logo"><Logo /><span className="logo-text">Špejtek<small>Malířství &amp; natěračství</small></span></div>
-            <p>Poctivé řemeslo. Pro místa, na kterých vám záleží.</p>
+            <p>Malíř a natěrač z Jihlavy. Byty, domy, fasády a dekorativní stěrky po celé Vysočině.</p>
           </div>
           <div>
-            <h4>Co děláme</h4>
+            <h4>Malování</h4>
             <ul>
               <li><Link to="/#sluzby">Malířské práce</Link></li>
               <li><Link to="/#sluzby">Malování bytů</Link></li>
@@ -20,7 +20,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4>A také</h4>
+            <h4>Venku a opravy</h4>
             <ul>
               <li><Link to="/#sluzby">Fasády a sokly</Link></li>
               <li><Link to="/#sluzby">Natěračské práce</Link></li>
@@ -28,11 +28,11 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4>Zůstaňme v kontaktu</h4>
+            <h4>Kontakt</h4>
             <ul>
               <li><a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phoneDisplay}</a></li>
-              <li><Link to="/vizualizator">3D vizualizátor</Link></li>
-              <li><Link to="/#pristup">Postup</Link></li>
+              <li><Link to="/vizualizator">Vyzkoušet barvy</Link></li>
+              <li><Link to="/#pristup">O mně</Link></li>
               <li>{BUSINESS.area}</li>
               <li><Link to="/kontakt">Nezávazná poptávka</Link></li>
             </ul>

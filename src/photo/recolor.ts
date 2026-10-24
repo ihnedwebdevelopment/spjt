@@ -84,7 +84,7 @@ export async function loadPhoto(file: Blob | string, maxSide = 1600): Promise<{ 
   }
 }
 
-function analyse(src: Uint8ClampedArray, w: number, h: number): Photo {
+export function analyse(src: Uint8ClampedArray, w: number, h: number): Photo {
   const n = w * h
   const lab = new Float32Array(n * 3)
   for (let i = 0; i < n; i++) {

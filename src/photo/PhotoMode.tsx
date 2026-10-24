@@ -403,8 +403,7 @@ export default function PhotoMode({ modeSwitch }: { modeSwitch: ReactNode }) {
       >
         {!photo && (
           <div className="photo-empty">
-            <span className="eyebrow">Vaše fotka</span>
-            <h2>Vyfoťte svůj pokoj a <em>přebarvěte</em> ho</h2>
+            <h2>Vyfoťte svůj pokoj a přebarvěte ho</h2>
             <p className="lead">Klepnete na stěnu a ta se přebarví. Stíny, světlo i struktura zdi zůstanou, takže uvidíte, jak bude vypadat právě vaše místnost.</p>
             <div className="hero-actions">
               <button className="btn" onClick={() => fileRef.current?.click()}>Nahrát fotku <Icon name="arrow" size={18} /></button>

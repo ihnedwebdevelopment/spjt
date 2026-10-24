@@ -159,8 +159,8 @@ export default function RoomWizard() {
       <div className="wizard">
         <header className="wizard-head">
           <div>
-            <span className="eyebrow">Nová místnost</span>
-            <h2 id="wiz-title">Postavte si <em>svoji</em> místnost</h2>
+            <h2 id="wiz-title">Nová místnost</h2>
+            <p className="hint" style={{ marginTop: 6 }}>Pár údajů stačí, přesné míry doladíme při prohlídce.</p>
           </div>
           <button className="wizard-x" aria-label="Zavřít" onClick={() => openWizard(false)}>✕</button>
         </header>
