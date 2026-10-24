@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import Icon from './Icon'
-import { PROCESS, SERVICES } from '../data/services'
+import { PROCESS, PROMISES, SERVICES } from '../data/services'
 import { REALIZACE, type Realizace } from '../data/realizace'
 import { HERO_LOOKS } from '../data/heroLooks'
 import { webglSupported } from '../lib/webgl'
@@ -15,7 +15,7 @@ import pokojPo from '../images/pokoj-po.webp'
 const HeroScene = lazy(() => import('./HeroScene'))
 
 /* ───────── realizace: před a po ───────── */
-function GalleryCard({ r }: { r: Realizace }) {
+export function GalleryCard({ r }: { r: Realizace }) {
   const ref = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
@@ -96,10 +96,11 @@ export function Services() {
           <ul className="svc-list">
             {SERVICES.map((s, n) => (
               <li key={s.id} className={active === n ? 'on' : ''}>
-                <Link to="/kontakt" className="svc-row" onMouseEnter={() => setActive(n)} onFocus={() => setActive(n)}>
+                <Link to={'/' + s.slug} className="svc-row" onMouseEnter={() => setActive(n)} onFocus={() => setActive(n)}>
                   <span className="svc-body">
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
+                    <span className="text-link">Podrobnosti a ukázky</span>
                   </span>
                   <img className="svc-thumb" src={s.image} alt="" loading="lazy" decoding="async" />
                 </Link>
@@ -203,6 +204,12 @@ export function Process() {
           </div>
         </div>
 
+        <ul className="promises">
+          {PROMISES.map((p) => (
+            <li key={p.title}><h4>{p.title}</h4><p>{p.text}</p></li>
+          ))}
+        </ul>
+
         <h3 className="steps-title">Jak to proběhne</h3>
         <ol className="steps" ref={ref}>
           <motion.span aria-hidden className="steps-progress" style={{ scaleX: w }} />
@@ -211,6 +218,7 @@ export function Process() {
               <span className="step-num">{n + 1}</span>
               <h4>{p.title}</h4>
               <p>{p.text}</p>
+              <ul className="step-points">{p.points.map((x) => <li key={x}>{x}</li>)}</ul>
             </li>
           ))}
         </ol>

@@ -4,6 +4,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import ContactPage from './pages/ContactPage'
+import ServicePage from './pages/ServicePage'
+import { SERVICES } from './data/services'
 
 const Designer = lazy(() => import('./pages/Designer'))
 
@@ -29,6 +31,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/kontakt" element={<ContactPage />} />
+        {SERVICES.map((s) => <Route key={s.slug} path={'/' + s.slug} element={<ServicePage s={s} />} />)}
         <Route
           path="/vizualizator"
           element={

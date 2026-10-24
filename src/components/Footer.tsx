@@ -14,17 +14,17 @@ export default function Footer() {
           <div>
             <h4>Malování</h4>
             <ul>
-              <li><Link to="/#sluzby">Malířské práce</Link></li>
-              <li><Link to="/#sluzby">Malování bytů</Link></li>
-              <li><Link to="/#sluzby">Dekorativní stěrky</Link></li>
+              <li><Link to="/malirske-prace-jihlava">Malířské práce</Link></li>
+              <li><Link to="/malovani-bytu-jihlava">Malování bytů</Link></li>
+              <li><Link to="/dekorativni-sterky-jihlava">Dekorativní stěrky</Link></li>
             </ul>
           </div>
           <div>
             <h4>Venku a opravy</h4>
             <ul>
-              <li><Link to="/#sluzby">Fasády a sokly</Link></li>
-              <li><Link to="/#sluzby">Natěračské práce</Link></li>
-              <li><Link to="/#sluzby">Opravy zdí</Link></li>
+              <li><Link to="/fasady-jihlava">Fasády a sokly</Link></li>
+              <li><Link to="/nateracske-prace-jihlava">Natěračské práce</Link></li>
+              <li><Link to="/opravy-zdi-jihlava">Opravy zdí</Link></li>
             </ul>
           </div>
           <div>

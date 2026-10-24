@@ -9,6 +9,7 @@ import { ColorTab, FurnitureTab, LightTab, RoomTab, SummaryTab, TABS, type Tab }
 import RoomWizard from '../designer/RoomWizard'
 import { BUSINESS } from '../config'
 import Icon from '../components/Icon'
+import { usePageMeta } from '../lib/seo'
 
 const DesignerScene = lazy(() => import('../designer/DesignerScene'))
 const PhotoMode = lazy(() => import('../photo/PhotoMode'))
@@ -46,6 +47,7 @@ function ModeSwitch({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
 }
 
 export default function Designer() {
+  usePageMeta('Vyzkoušejte barvy na fotce i ve 3D | Malířství Špejtek', 'Vyfoťte svůj pokoj a přebarvěte stěny, nebo si postavte místnost ve 3D. Spočítá plochu i spotřebu barvy. Návrh pošlete s poptávkou.', '/vizualizator')
   const [params, setParams] = useSearchParams()
   const mode: Mode = params.get('rezim') === 'foto' ? 'foto' : '3d'
   const setMode = (m: Mode) => {
@@ -68,7 +70,6 @@ export default function Designer() {
   const st = useDesigner.getState()
 
   useEffect(() => {
-    document.title = '3D vizualizátor výmalby | Malířství Špejtek'
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement
       if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) return

@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
 import Hero from '../components/Hero'
 import FinishLab from '../components/FinishLab'
 import ContactSection from '../components/ContactSection'
+import Faq from '../components/Faq'
 import { Gallery, Process, Services, Visualizer } from '../components/Sections'
+import { usePageMeta } from '../lib/seo'
 
 export default function Home() {
-  useEffect(() => {
-    document.title = 'Malířství Špejtek – malíř Jihlava a Vysočina | 3D náhled výmalby'
-  }, [])
+  usePageMeta(
+    'Malíř Jihlava a Vysočina | Malířství Špejtek',
+    'Malířské a natěračské práce v Jihlavě a na Vysočině: malování bytů, dekorativní stěrky, fasády. Přebarvěte si stěnu na fotce svého pokoje a pošlete poptávku.',
+    '/',
+  )
   return (
     <main>
       <Hero />
@@ -16,6 +19,7 @@ export default function Home() {
       <FinishLab />
       <Visualizer />
       <Process />
+      <Faq />
       <ContactSection />
     </main>
   )

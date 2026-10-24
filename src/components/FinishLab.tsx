@@ -1,65 +1,52 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import { webglSupported } from '../lib/webgl'
-import { swatchDataURL } from '../lib/textures'
+import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import beton from '../images/betonova-sterka-seda.webp'
+import zlata from '../images/zlata-dekorativni-sterka.webp'
+import strop from '../images/jemna-struktura-strop.webp'
+import detail from '../images/dekorativni-sterka-detail.webp'
 
-const FinishCanvas = lazy(() => import('./FinishCanvas'))
-
-export const FINISH_OPTIONS = [
-  { id: 'concrete', label: 'Betonová stěrka', text: 'Industriální vzhled s jemnými mráčky. Přejeďte myší a podívejte se, jak světlo dopadá do struktury.', colors: ['#9b9b97', '#b8b5ae', '#6f6f6b', '#c9c3b6'] },
-  { id: 'venetian', label: 'Benátský štuk', text: 'Hladký, hluboký povrch s jemným leskem. Vzniká v několika tenkých vrstvách, ruční prací.', colors: ['#e6dcc3', '#d9bd96', '#cfe0ea', '#a7b79a'] },
-  { id: 'gold', label: 'Zlatá stěrka', text: 'Kovový efekt pro jednu akcentovou stěnu. V denním světle zlatavý, večer hřejivý.', colors: ['#cfa84e', '#b9b3a6', '#b87333', '#8f8e89'] },
+const SURFACES = [
+  { id: 'beton', label: 'Betonová stěrka', img: beton, pos: '50% 40%', text: 'Industriální vzhled s jemnými mráčky. Každá stěna je jiná, protože se tahy dělají ručně.' },
+  { id: 'zlata', label: 'Zlatá stěrka', img: zlata, pos: '50% 30%', text: 'Kovový efekt na jednu akcentní stěnu. Ve dne zlatavý, večer při lampě hřejivý.' },
+  { id: 'strop', label: 'Struktura na stropě', img: strop, pos: '50% 35%', text: 'Jemná struktura, která oživí i strop. Světlo z okna po ní klouže a vytváří stíny.' },
+  { id: 'ruka', label: 'Ruční nanášení', img: detail, pos: '50% 50%', text: 'Stěrky nanáším špachtlí v několika tenkých vrstvách. Odstín i strukturu vybíráme spolu podle místnosti.' },
 ] as const
 
+/** Stěrky zblízka: skutečné fotky, přes které „klouže“ světlo podle pohybu myši či prstu. */
 export default function FinishLab() {
   const [idx, setIdx] = useState(0)
-  const [colorIdx, setColorIdx] = useState(0)
-  const [near, setNear] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  const gl = webglSupported()
-  const opt = FINISH_OPTIONS[idx]
-  const hex = opt.colors[colorIdx]
+  const stage = useRef<HTMLDivElement>(null)
+  const s = SURFACES[idx]
 
-  useEffect(() => {
-    const el = ref.current
+  const move = (e: React.PointerEvent) => {
+    const el = stage.current
     if (!el) return
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: '300px' })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--lx', `${((e.clientX - r.left) / r.width) * 100}%`)
+    el.style.setProperty('--ly', `${((e.clientY - r.top) / r.height) * 100}%`)
+    el.classList.add('lit')
+  }
 
   return (
     <section className="section" id="sterky">
       <div className="wrap finish">
-        <div>
-          <div className="finish-stage" ref={ref}>
-            {gl && near ? (
-              <Suspense fallback={null}>
-                <FinishCanvas kind={opt.id} hex={hex} />
-              </Suspense>
-            ) : (
-              <img src={swatchDataURL(opt.id, hex, 800, 700)} alt={opt.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            )}
-            <span className="hint">{gl ? 'Hýbejte myší, světlo vás následuje' : opt.label}</span>
-          </div>
+        <div ref={stage} className="finish-stage" onPointerMove={move} onPointerLeave={() => stage.current?.classList.remove('lit')}>
+          {SURFACES.map((x, n) => (
+            <img key={x.id} src={x.img} alt={x.label} loading="lazy" decoding="async" className={n === idx ? 'on' : ''} style={{ objectPosition: x.pos }} />
+          ))}
+          <span className="finish-light" aria-hidden />
+          <span className="hint">Přejeďte po fotce, jako byste stěnu kontrolovali proti světlu</span>
         </div>
         <div className="finish-copy">
           <h2>Stěrky zblízka</h2>
-          <p className="lead">Betonová stěrka, benátský štuk a zlatý efekt dělám ručně, v několika vrstvách. Pohybujte myší a sledujte, jak světlo klouže po struktuře.</p>
-          <div>
-            <div className="pills" role="group" aria-label="Typ povrchu">
-              {FINISH_OPTIONS.map((o, n) => (
-                <button key={o.id} className="pill" aria-pressed={idx === n} onClick={() => { setIdx(n); setColorIdx(0) }}>{o.label}</button>
-              ))}
-            </div>
+          <p className="lead">Betonová stěrka, benátský štuk a zlatý efekt. Tady jsou skutečné stěny, které jsem dělal, ne vzorky z katalogu.</p>
+          <div className="pills" role="tablist" aria-label="Povrch">
+            {SURFACES.map((x, n) => (
+              <button key={x.id} role="tab" className="pill" aria-selected={n === idx} aria-pressed={n === idx} onClick={() => setIdx(n)}>{x.label}</button>
+            ))}
           </div>
-          <p className="finish-note">{opt.text}</p>
-          <div>
-            <div className="swatch-row" role="group" aria-label="Odstín">
-              {opt.colors.map((c, n) => (
-                <button key={c} aria-label={'Odstín ' + c} aria-pressed={colorIdx === n} style={{ background: c }} onClick={() => setColorIdx(n)} />
-              ))}
-            </div>
-          </div>
+          <p className="finish-note">{s.text}</p>
+          <Link to="/dekorativni-sterky-jihlava" className="text-link">Více o dekorativních stěrkách</Link>
         </div>
       </div>
     </section>
