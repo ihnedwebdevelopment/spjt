@@ -1,13 +1,7 @@
 node_modules/
 dist/
-.svelte-kit/
-.vite/
+.vercel/
 .env*
+*.log
 .DS_Store
-*.local
-
-# Vnořený repozitář jiného projektu — na GitHub tohoto webu nepatří.
-spejtek/
-
-# Náhodně naklonovaný cílový repozitář — nepatří dovnitř projektu.
-spjt/
+Thumbs.db

@@ -1,102 +1,51 @@
-# Malířství Špejtek — nový design
+# Malířství Špejtek – web s 3D vizualizátorem
 
-Web v Svelte 5, Vite a Tailwind CSS 4. Modrobílá identita, lokálně uložené písmo Manrope, pohyblivé hero s velkými fotografiemi, vrstvené sekce a rozsáhlé scroll animace na GSAP. Obsah je rozdělený do podstránek, aby žádná z nich nebyla nekonečně dlouhá.
+React 19 + TypeScript + Vite · Three.js (react-three-fiber, drei) · framer-motion · zustand
 
 ## Spuštění
 
-```sh
+```bash
 npm install
-npm run dev
+npm run dev        # vývoj na http://localhost:5173
+npm run build      # kontrola typů + produkční build do dist/
+npm run preview    # náhled produkčního buildu
 ```
 
-## Ověření a sestavení
+Web je SPA (React Router). Hosting musí přesměrovat všechny cesty na `index.html`:
+`vercel.json` (Vercel) a `public/_redirects` (Netlify/Cloudflare) jsou přiloženy.
 
-```sh
-npm run check
-npm run build
-npm run preview
-```
+## Co kde je
 
-Build vytvoří 12 předrenderovaných HTML stránek ve složce `dist`. Původní adresy `.html` zůstávají funkční. Svelte následně hydratuje interaktivní prvky. Celý obsah je dostupný i před načtením JavaScriptu.
+| Soubor / složka | K čemu |
+| --- | --- |
+| `src/config.ts` | telefon, oblast, **přepínač orientační ceny** (výchozí: vypnuto) |
+| `src/data/paints.ts` | paleta odstínů, lesky, povrchy (stěrky) |
+| `src/data/services.ts` | služby a kroky „Náš přístup“ |
+| `src/data/realizace.ts` | realizace – fotky z `src/images/`, volitelně dvojice před/po |
+| `src/data/presets.ts` | předvolené místnosti (rozměry, nábytek, barvy) |
+| `src/designer/` | 3D vizualizátor (místnost, nábytek, světlo, kamera, panely) |
+| `src/components/HeroScene.tsx` | 3D hero s parallaxem |
+| `src/components/FinishCanvas.tsx` | interaktivní 3D ukázka stěrek |
+| `src/lib/textures.ts` | procedurální textury (beton, štuk, zlatá, podlahy) |
+| `src/lib/urlState.ts` | sdílení návrhu odkazem (`/vizualizator?n=...`) |
 
-## Struktura
+## Vizualizátor – funkce
 
-- `src/App.svelte`: sdílené rozložení, všechny stránky a interakce.
-- `src/data.js`: služby, realizace, časté dotazy, kroky postupu, sliby, materiály, odstíny.
-- `src/style.css`: vlastní design a responzivní pravidla nad Tailwind CSS.
-- `src/motion.js`: GSAP a ScrollTrigger, načítané až na klientovi.
-- `public/assets/img`: fotografie firmy; `public/assets/img/sm` jsou zmenšené varianty pro mobil (`srcset`).
-- `original`: původní HTML pro zálohu a zachování strukturovaných dat.
-- `scripts/prerender.mjs`: předrenderování všech stránek a zachování SEO metadat.
+**Režim „Vaše fotka“** (`src/photo/`)
+- Zákazník nahraje nebo vyfotí svůj pokoj, klepne na stěnu a ta se přebarví – chytrý výběr plochy (CIELAB + hrany), zachovají se stíny, světlo i struktura.
+- Více ploch s různými odstíny, štětec a guma na doladění, citlivost výběru, zpět (Ctrl+Z), posuvník před/po, stažení obrázku s rozpisem barev, předání do poptávky.
+- Vše běží v prohlížeči, fotka se nikam neodesílá.
 
-## Stránky
+**Režim „3D místnost“** (`src/designer/`)
+- Více místností (lišta nad záložkami), smazání poslední otevře **průvodce novou místností**: typ, rozměry, okno a dveře v půdorysu, podlaha, vybavení, volitelně fotka (z ní se odhadne stávající barva stěn pro před/po). Místnosti se ukládají v prohlížeči.
+- Hotové barevné kombinace, barva/lesk/povrch zvlášť pro každou stěnu, strop a sokl.
+- Fotorealistické vykreslení: ambientní okluze (N8AO), měkké stíny, denní světlo oknem, výhled z okna, záře lamp, tónování Khronos Neutral (věrné barvy); kvalita se automaticky přizpůsobí výkonu zařízení.
+- Čas dne 6–21 h, večerní světla, 5 podlah včetně rybí kosti, nábytek přetahovatelný po podlaze.
+- Rozpis ploch a spotřeby za místnost i za všechny místnosti, export JPG v 2× rozlišení s rozpisem, odkaz na návrh, poptávka se všemi místnostmi.
 
-- `/` — hero s pohyblivými fotografiemi, služby, představení řemeslníka, pás realizací, přístup, časté dotazy.
-- `/nas-pristup.html` — řemeslo a materiály, postup krok za krokem, sliby, porovnání před a po.
-- `/realizace.html` — filtrovatelná galerie, porovnání před a po, výběr odstínu.
-- `/kontakt.html` — kontakt, poptávkový formulář, postup.
-- `/lokality-jihlava-vysocina.html` — oblast působnosti.
-- Šest stránek jednotlivých služeb.
+## Poznámky
 
-## Animace
-
-Scroll animace zajišťuje GSAP a ScrollTrigger v `src/motion.js`, načítané až na klientovi:
-
-- pohyblivé sloupce fotografií v hero (nekonečný drift, parallax myší),
-- odkrývání nadpisů po slovech, kreslení podtržení v hero,
-- parallax vrstev (`.par`) a fotografií na desktopu,
-- připnutý horizontální pás realizací s ukazatelem průběhu (na mobilu běžné swipování),
-- zvýrazňování aktivního kroku postupu a jeho ukazatel průběhu,
-- magnetická tlačítka, jemný náklon karet a světelný odlesk (jen myš),
-- ukazatel průběhu čtení stránky a zmenšení hlavičky.
-
-`prefers-reduced-motion` animace vypíná, mobil používá kratší a menší pohyb. Při odpojení komponenty se animace a posluchače uklidí.
-
-## Mobil
-
-- Spodní lišta s tlačítky Zavolat a Nezávazná poptávka (objeví se po odscrollování).
-- Zmenšené varianty fotografií přes `srcset` a `sizes`.
-- Vodorovně posuvné filtry galerie, snap u pásu realizací, dotykové cíle nejméně 46 px.
-
-Poptávkový formulář připraví text ke kontrole a otevření SMS na +420 602 581 542; nic se automaticky neodesílá a údaje se neukládají na server. Uživatel může text také zkopírovat. Odeslání i fotografie dokončí ve své aplikaci pro zprávy.
-
-Produkční doména v kanonických odkazech zůstává `https://malirstvi-spejtek.net`.
-
-## Adresy stránek
-
-Stránky běží na adresách **bez přípony `.html`** (`/realizace`, `/kontakt`, …), protože Cloudflare Pages soubor `realizace.html` sám servíruje na `/realizace`. Staré adresy s `.html` jsou v `public/_redirects` přesměrované trvale (301), takže odkazy z Googlu i vizitek dál fungují. `vite dev` i `vite preview` se díky pluginu v `vite.config.js` chovají stejně.
-
-## Nahrání na GitHub
-
-Repozitář je připravený, stačí:
-
-```sh
-git add .
-git commit -m "Nový design: pohyblivé hero, GSAP animace, rozdělení obsahu"
-git remote add origin git@github.com:UZIVATEL/malirstvi-spejtek.git   # jen poprvé
-git push -u origin main
-```
-
-Do gitu se neukládá `node_modules/`, `dist/` ani vnořená složka `spejtek/` (viz `.gitignore`). Build si Cloudflare udělá sám.
-
-## Hostování na Cloudflare Pages
-
-1. V Cloudflare dashboardu: **Workers & Pages → Create → Pages → Connect to Git** a vyberte tento repozitář.
-2. Nastavení buildu:
-
-   | Položka | Hodnota |
-   | --- | --- |
-   | Framework preset | None |
-   | Build command | `npm run build` |
-   | Build output directory | `dist` |
-   | Root directory | (prázdné) |
-
-3. Verze Node se bere ze souboru `.node-version` (22.12.0). Kdyby build hlásil starou verzi, přidejte v **Settings → Variables** proměnnou `NODE_VERSION` = `22.12.0`.
-4. **Save and Deploy.** Každý další `git push` do větve `main` nasadí web automaticky; pushe do jiných větví vytvoří náhled.
-5. Vlastní doména: **Custom domains → Set up a domain** a zadejte `malirstvi-spejtek.net` i `www.malirstvi-spejtek.net`. Pokud je doména v Cloudflare, DNS se doplní samo.
-
-Co se nasazuje: obsah složky `dist`, včetně `_headers` (bezpečnostní hlavičky a cache) a `_redirects` (přesměrování starých `.html` adres). Soubor `dist/404.html` Cloudflare použije jako chybovou stránku.
-
-## Poznámka k původním souborům
-
-V kořeni repozitáře zůstávají soubory původního webu (`assets/`, `robots.txt`, `sitemap.xml`, `_headers`, `_redirects`, `humans.txt`, `README.txt`). Nenasazuje se z nich nic — živé verze jsou v `public/`. Můžete je smazat, pokud už zálohu nepotřebujete. Složku `original/` ale nechte, build z ní bere strukturovaná data pro SEO.
+- Odstíny na monitoru nejsou přesné – ve vizualizátoru je to uvedeno, finální odstín se ověřuje vzorníkem.
+- Kontaktní formulář nic neposílá na server: otevře SMS na 602 581 542 (nebo zkopíruje zprávu). Pro e-mail/backend je potřeba doplnit adresu nebo službu.
+- Nábytek je procedurální (nízký počet polygonů).
+- Fotky realizací jsou v `src/images/`, seznam v `src/data/realizace.ts`.

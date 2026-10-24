@@ -1,0 +1,65 @@
+{
+  "redirects": [
+    {
+      "source": "/malirske-prace-jihlava.html",
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/malovani-bytu-jihlava.html",
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/dekorativni-sterky-jihlava.html",
+      "destination": "/#sterky",
+      "permanent": true
+    },
+    {
+      "source": "/fasady-jihlava.html",
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/nateracske-prace-jihlava.html",
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/opravy-zdi-jihlava.html",
+      "destination": "/#sluzby",
+      "permanent": true
+    },
+    {
+      "source": "/realizace.html",
+      "destination": "/#realizace",
+      "permanent": true
+    },
+    {
+      "source": "/nas-pristup.html",
+      "destination": "/#pristup",
+      "permanent": true
+    },
+    {
+      "source": "/kontakt.html",
+      "destination": "/kontakt",
+      "permanent": true
+    },
+    {
+      "source": "/lokality-jihlava-vysocina.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/404.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
