@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import ContactForm from './ContactForm'
-import { BUSINESS } from '../config'
+import { useBusiness } from '../content/store'
 import Icon from './Icon'
 
 export default function ContactSection({ standalone }: { standalone?: boolean }) {
+  const BUSINESS = useBusiness()
   return (
     <section className={'section tint' + (standalone ? ' page-top' : '')} id="kontakt">
       <div className="wrap contact">

@@ -5,9 +5,12 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import ContactPage from './pages/ContactPage'
 import ServicePage from './pages/ServicePage'
-import { SERVICES } from './data/services'
+import { useContent } from './content/store'
+import PostsPage from './pages/PostsPage'
 
 const Designer = lazy(() => import('./pages/Designer'))
+const PostPage = lazy(() => import('./pages/PostPage'))
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -23,7 +26,15 @@ function ScrollManager() {
 
 export default function App() {
   const { pathname } = useLocation()
+  const services = useContent((s) => s.services)
   const designer = pathname.startsWith('/vizualizator')
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    return (
+      <Suspense fallback={<div className="adm-boot">Načítám administraci…</div>}>
+        <AdminApp />
+      </Suspense>
+    )
+  }
   return (
     <>
       <ScrollManager />
@@ -31,7 +42,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/kontakt" element={<ContactPage />} />
-        {SERVICES.map((s) => <Route key={s.slug} path={'/' + s.slug} element={<ServicePage s={s} />} />)}
+        {services.map((s) => <Route key={s.slug} path={'/' + s.slug} element={<ServicePage s={s} />} />)}
         <Route
           path="/vizualizator"
           element={
@@ -39,6 +50,11 @@ export default function App() {
               <Designer />
             </Suspense>
           }
+        />
+        <Route path="/aktuality" element={<PostsPage />} />
+        <Route
+          path="/aktuality/:slug"
+          element={<Suspense fallback={<div className="page-top wrap">Načítám článek…</div>}><PostPage /></Suspense>}
         />
         <Route path="*" element={<Home />} />
       </Routes>

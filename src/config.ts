@@ -1,12 +1,24 @@
-/** Jediné místo pro firemní údaje a přepínače. */
-export const BUSINESS = {
+/**
+ * Jediné místo pro firemní údaje a přepínače.
+ * Výchozí hodnoty – po načtení webu je může přepsat administrace (src/content/store.ts).
+ */
+export const BUSINESS: {
+  name: string
+  tagline: string
+  phoneDisplay: string
+  phoneTel: string
+  area: string
+  email: string
+  year: number
+} = {
   name: 'Malířství Špejtek',
   tagline: 'Čerstvá barva. Úplně nový pocit.',
   phoneDisplay: '602 581 542',
   phoneTel: '+420602581542',
   area: 'Jihlava a celá Vysočina',
-  year: 2026,
-} as const
+  email: '',
+  year: new Date().getFullYear(),
+}
 
 /**
  * Orientační cena ve vizualizátoru. Původní web ceny nezveřejňuje,

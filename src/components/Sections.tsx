@@ -2,11 +2,11 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import Icon from './Icon'
-import { PROCESS, PROMISES, SERVICES } from '../data/services'
-import { REALIZACE, type Realizace } from '../data/realizace'
+import { PROCESS, PROMISES } from '../data/services'
+import { type Realizace } from '../data/realizace'
+import { useBusiness, useContent } from '../content/store'
 import { HERO_LOOKS } from '../data/heroLooks'
 import { webglSupported } from '../lib/webgl'
-import { BUSINESS } from '../config'
 import portrait from '../images/spejtek-remeslnik.webp'
 import leseni from '../images/hero-malir-na-leseni.webp'
 import pokojPred from '../images/pokoj-pred.webp'
@@ -47,13 +47,14 @@ export function GalleryCard({ r }: { r: Realizace }) {
             />
           </>
         )}
-        <figcaption><b>{r.title}</b><small>{r.kind}</small></figcaption>
+        <figcaption><b>{r.title}</b><small>{r.place ? `${r.kind} · ${r.place}` : r.kind}</small></figcaption>
       </figure>
     </div>
   )
 }
 
 export function Gallery() {
+  const realizace = useContent((s) => s.realizace)
   return (
     <section className="section" id="realizace">
       <div className="wrap">
@@ -62,7 +63,7 @@ export function Gallery() {
           <p className="lead">Zakázky z Jihlavy a okolí, nafocené telefonem přímo na místě. U dvojic táhněte jezdcem do stran.</p>
         </header>
         <div className="gal">
-          {REALIZACE.map((r) => <GalleryCard key={r.id} r={r} />)}
+          {realizace.map((r) => <GalleryCard key={r.id} r={r} />)}
         </div>
       </div>
     </section>
@@ -71,7 +72,9 @@ export function Gallery() {
 
 /* ───────── služby ───────── */
 export function Services() {
+  const services = useContent((s) => s.services)
   const [active, setActive] = useState(0)
+  const current = services[Math.min(active, services.length - 1)]
   return (
     <section className="section tint" id="sluzby">
       <div className="wrap">
@@ -83,8 +86,8 @@ export function Services() {
           <div className="svc-media" aria-hidden>
             <AnimatePresence initial={false}>
               <motion.img
-                key={SERVICES[active].id}
-                src={SERVICES[active].image}
+                key={current.id}
+                src={current.image}
                 alt=""
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -94,7 +97,7 @@ export function Services() {
             </AnimatePresence>
           </div>
           <ul className="svc-list">
-            {SERVICES.map((s, n) => (
+            {services.map((s, n) => (
               <li key={s.id} className={active === n ? 'on' : ''}>
                 <Link to={'/' + s.slug} className="svc-row" onMouseEnter={() => setActive(n)} onFocus={() => setActive(n)}>
                   <span className="svc-body">
@@ -182,6 +185,7 @@ export function Visualizer() {
 
 /* ───────── kdo jsem a jak pracuji ───────── */
 export function Process() {
+  const BUSINESS = useBusiness()
   const ref = useRef<HTMLOListElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 55%'] })
   const w = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })

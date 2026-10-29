@@ -1,9 +1,34 @@
 {
-  // Cloudflare Workers – statický web (SPA). Neznámé adresy (/vizualizator, /kontakt) obslouží index.html.
+  // Cloudflare Workers – web (SPA ze složky dist) + API administrace (worker/index.ts)
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "spjt",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // tyto cesty obslouží worker, vše ostatní jde rovnou ze statických souborů
+    "run_worker_first": ["/api/*", "/media/*", "/sitemap.xml", "/aktuality", "/aktuality/*"]
+  },
+  // Databáze a úložiště fotek. Při prvním `wrangler deploy` je Cloudflare vytvoří sám
+  // (nebo vytvořte ručně: `npx wrangler d1 create spejtek` a doplňte database_id).
+  "d1_databases": [
+    { "binding": "DB", "database_name": "spejtek", "migrations_dir": "migrations" }
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "spejtek-media" }
+  ],
+  "vars": {
+    "SITE_URL": "https://malirstvi-spejtek.net",
+    "GOOGLE_ADS_API_VERSION": "v26"
+  },
+  "observability": { "enabled": true }
+  // Tajné hodnoty (nikdy sem nepsat) – nastavit přes `npx wrangler secret put NÁZEV`:
+  //   ADMIN_SETUP_CODE            jednorázový kód pro založení účtu majitele
+  //   GOOGLE_CLIENT_ID            OAuth klient (Google Cloud → APIs & Services → Credentials)
+  //   GOOGLE_CLIENT_SECRET
+  //   GOOGLE_ADS_DEVELOPER_TOKEN  Google Ads → Nástroje → API Center
+  //   RESEND_API_KEY              (volitelné) e-mail o nové poptávce
+  //   MAIL_FROM                   (volitelné) např. "Web Špejtek <web@malirstvi-spejtek.net>"
 }

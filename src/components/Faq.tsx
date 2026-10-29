@@ -1,7 +1,8 @@
-import { FAQS } from '../data/services'
+import { useContent } from '../content/store'
 
 /** Časté dotazy – nativní rozbalovací prvky (fungují i bez JavaScriptu a s klávesnicí). */
 export default function Faq() {
+  const FAQS = useContent((s) => s.faqs)
   return (
     <section className="section" id="dotazy">
       <div className="wrap faq">
@@ -21,7 +22,7 @@ export default function Faq() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org', '@type': 'FAQPage',
           mainEntity: FAQS.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
-        }) }}
+        }).replace(/</g, '\\u003c') }}
       />
     </section>
   )

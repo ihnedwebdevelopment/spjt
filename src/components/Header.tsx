@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import Logo from './Logo'
 import Icon from './Icon'
-import { BUSINESS } from '../config'
+import { useBusiness } from '../content/store'
 
 export default function Header() {
+  const BUSINESS = useBusiness()
   const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)

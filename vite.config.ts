@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // API administrace běží ve workeru: v druhém terminálu `npm run dev:api` (wrangler dev na :8787)
+    proxy: Object.fromEntries(['/api', '/media', '/sitemap.xml'].map((p) => [p, { target: 'http://127.0.0.1:8787', changeOrigin: false }])),
+  },
   build: {
     chunkSizeWarningLimit: 1200,
     rollupOptions: {

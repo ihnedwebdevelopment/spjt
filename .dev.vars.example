@@ -1,0 +1,6 @@
+# Zkopírujte jako .dev.vars pro lokální vývoj (soubor se necommituje)
+ADMIN_SETUP_CODE=zmen-me-na-dlouhy-kod
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_ADS_DEVELOPER_TOKEN=
+RESEND_API_KEY=

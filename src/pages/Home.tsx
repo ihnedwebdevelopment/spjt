@@ -4,6 +4,7 @@ import ContactSection from '../components/ContactSection'
 import Faq from '../components/Faq'
 import { Gallery, Process, Services, Visualizer } from '../components/Sections'
 import { usePageMeta } from '../lib/seo'
+import { LatestPosts } from './PostsPage'
 
 export default function Home() {
   usePageMeta(
@@ -19,6 +20,7 @@ export default function Home() {
       <FinishLab />
       <Visualizer />
       <Process />
+      <LatestPosts />
       <Faq />
       <ContactSection />
     </main>

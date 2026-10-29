@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useContent } from '../content/store'
 
 const SITE = 'https://malirstvi-spejtek.net'
 
@@ -9,7 +10,11 @@ function setMeta(selector: string, attr: string, value: string, create: () => HT
 }
 
 /** Titulek, popis a kanonická adresa stránky (pro vyhledávače a sdílení). */
-export function usePageMeta(title: string, description: string, path: string) {
+export function usePageMeta(defTitle: string, defDescription: string, path: string) {
+  // titulek a popis lze přepsat v administraci (SEO stránek)
+  const o = useContent((s) => s.pageSeo[path])
+  const title = o?.title || defTitle
+  const description = o?.description || defDescription
   useEffect(() => {
     document.title = title
     const mk = (tag: string, a: Record<string, string>) => () => { const e = document.createElement(tag); for (const k in a) e.setAttribute(k, a[k]); return e }

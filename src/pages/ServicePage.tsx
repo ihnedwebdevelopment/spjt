@@ -1,17 +1,19 @@
 import { Link } from 'react-router-dom'
-import { SERVICES, type Service } from '../data/services'
-import { REALIZACE } from '../data/realizace'
+import { type Service } from '../data/services'
+import { useBusiness, useContent } from '../content/store'
 import { GalleryCard } from '../components/Sections'
 import ContactSection from '../components/ContactSection'
 import Faq from '../components/Faq'
 import Icon from '../components/Icon'
-import { BUSINESS } from '../config'
 import { usePageMeta } from '../lib/seo'
 
 export default function ServicePage({ s }: { s: Service }) {
   usePageMeta(s.seoTitle, s.seoDescription, '/' + s.slug)
-  const works = REALIZACE.filter((r) => s.kinds.includes(r.kind))
-  const others = SERVICES.filter((x) => x.id !== s.id)
+  const BUSINESS = useBusiness()
+  const realizace = useContent((st) => st.realizace)
+  const services = useContent((st) => st.services)
+  const works = realizace.filter((r) => s.kinds.includes(r.kind))
+  const others = services.filter((x) => x.id !== s.id)
 
   return (
     <main>

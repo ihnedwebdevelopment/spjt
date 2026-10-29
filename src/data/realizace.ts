@@ -24,6 +24,10 @@ export interface Realizace {
   focus?: string
   /** Široká karta přes dva sloupce. */
   wide?: boolean
+  /** Místo zakázky (volitelné, doplňuje se v administraci). */
+  place?: string
+  /** Krátký popis (volitelné). */
+  text?: string
 }
 
 export const REALIZACE: Realizace[] = [

@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
-import { BUSINESS } from '../config'
+import { useBusiness, useContent } from '../content/store'
 
 export default function Footer() {
+  const BUSINESS = useBusiness()
+  const services = useContent((s) => s.services)
+  const hasPosts = useContent((s) => s.posts.length > 0)
+  const half = Math.ceil(services.length / 2)
   return (
     <footer className="footer">
       <div className="wrap">
@@ -12,19 +16,16 @@ export default function Footer() {
             <p>Malíř a natěrač z Jihlavy. Byty, domy, fasády a dekorativní stěrky po celé Vysočině.</p>
           </div>
           <div>
-            <h4>Malování</h4>
+            <h4>Služby</h4>
             <ul>
-              <li><Link to="/malirske-prace-jihlava">Malířské práce</Link></li>
-              <li><Link to="/malovani-bytu-jihlava">Malování bytů</Link></li>
-              <li><Link to="/dekorativni-sterky-jihlava">Dekorativní stěrky</Link></li>
+              {services.slice(0, half).map((s) => <li key={s.id}><Link to={'/' + s.slug}>{s.title}</Link></li>)}
             </ul>
           </div>
           <div>
-            <h4>Venku a opravy</h4>
+            <h4>A další</h4>
             <ul>
-              <li><Link to="/fasady-jihlava">Fasády a sokly</Link></li>
-              <li><Link to="/nateracske-prace-jihlava">Natěračské práce</Link></li>
-              <li><Link to="/opravy-zdi-jihlava">Opravy zdí</Link></li>
+              {services.slice(half).map((s) => <li key={s.id}><Link to={'/' + s.slug}>{s.title}</Link></li>)}
+              {hasPosts && <li><Link to="/aktuality">Aktuality a rady</Link></li>}
             </ul>
           </div>
           <div>

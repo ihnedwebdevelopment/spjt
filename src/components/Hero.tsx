@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useReducedMotion } from 'framer-motion'
-import { BUSINESS } from '../config'
+import { useBusiness } from '../content/store'
 import Icon from './Icon'
 import photoUrl from '../images/interier-po.webp'
 import maskUrl from '../images/interier-po-stena.png'
@@ -62,6 +62,7 @@ async function prepare(): Promise<{ photo: Photo; layer: Layer }> {
 }
 
 export default function Hero() {
+  const BUSINESS = useBusiness()
   const reduce = useReducedMotion()
   const [active, setActive] = useState(0)
   const [ready, setReady] = useState(false)
