@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api, type AdsCampaign, type AdsReport, fmtMoney, fmtNum } from '../api'
+import { ApiError, api, type AdsCampaign, type AdsReport, fmtMoney, fmtNum } from '../api'
+import AdsPlan from './AdsPlan'
 import { ConfirmButton, Delta, ErrorBox, I, LineChart, Loading, PageHead, RangePicker, Sheet, Stat, toast, toastError, useLoad } from '../ui'
 
 type Key = 'cost' | 'clicks' | 'impressions' | 'conversions'
@@ -21,6 +22,8 @@ export default function Ads() {
   ]
   const m = METRICS.find((x) => x.key === metric)!
   const enabled = d?.campaigns.filter((c) => c.status === 'ENABLED') ?? []
+  // účet Ads ještě není připojený → ukážeme kampaň připravenou ke spuštění
+  const notConnected = r.error instanceof ApiError && r.error.status === 409
 
   const setStatus = async (c: AdsCampaign, status: 'ENABLED' | 'PAUSED') => {
     try {
@@ -35,11 +38,12 @@ export default function Ads() {
 
   return (
     <div className="adm-page">
-      <PageHead title="Google Ads" back="/admin/google" sub={d ? `${d.name || 'Účet ' + d.customerId} · posledních ${days} dní` : 'Výkon placené reklamy'}>
-        <RangePicker value={days} onChange={setDays} options={[7, 30, 90]} />
+      <PageHead title="Google Ads" back="/admin/google" sub={d ? `${d.name || 'Účet ' + d.customerId} · posledních ${days} dní` : notConnected ? 'Vyhledávání Google · Jihlava, Praha, Brno, Pardubice' : 'Výkon placené reklamy'}>
+        {!notConnected && <RangePicker value={days} onChange={setDays} options={[7, 30, 90]} />}
       </PageHead>
       {r.loading && !d && <Loading label="Načítám data z Google Ads…" />}
-      {r.error && <ErrorBox error={r.error} retry={r.reload}><Link className="adm-link" to="/admin/google">Nastavení Google</Link></ErrorBox>}
+      {notConnected && <AdsPlan />}
+      {r.error && !notConnected && <ErrorBox error={r.error} retry={r.reload}><Link className="adm-link" to="/admin/google">Nastavení Google</Link></ErrorBox>}
       {d && (
         <>
           <section className="adm-stats four">

@@ -37,8 +37,8 @@ export default function Dashboard() {
         <Stat label="Kliknutí z Googlu (28 dní)" value={gsc.data ? fmtNum(gsc.data.total.clicks) : gscOn ? '…' : '–'} onClick={() => nav(gscOn ? '/admin/search-console' : '/admin/google')}>
           {gsc.data ? <Delta cur={gsc.data.total.clicks} prev={gsc.data.previous.clicks} /> : !gscOn && <small>Připojit Search Console</small>}
         </Stat>
-        <Stat label="Útrata za reklamy (30 dní)" value={ads.data ? fmtMoney(ads.data.total.cost, ads.data.currency) : adsOn ? '…' : '–'} onClick={() => nav(adsOn ? '/admin/reklamy' : '/admin/google')}>
-          {ads.data ? <small>{fmtNum(ads.data.total.clicks)} kliknutí · {fmtNum(ads.data.total.conversions, 0)} konverzí</small> : !adsOn && <small>Připojit Google Ads</small>}
+        <Stat label="Google Ads" value={ads.data ? fmtMoney(ads.data.total.cost, ads.data.currency) : adsOn ? '…' : 'Nespuštěno'} onClick={() => nav('/admin/reklamy')}>
+          {ads.data ? <small>útrata 30 dní · {fmtNum(ads.data.total.clicks)} kliknutí</small> : !adsOn && <small>Kampaň připravena ke spuštění</small>}
         </Stat>
         <Stat label="Obsah webu" value={s ? `${s.realizace} / ${s.posts}` : '–'} onClick={() => nav('/admin/obsah')}>
           <small>realizací / článků</small>

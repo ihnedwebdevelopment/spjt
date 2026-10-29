@@ -69,7 +69,7 @@ export interface AdsReport {
 
 /* ───────── formátování ───────── */
 export const fmtNum = (n: number, d = 0) => n.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: d })
-export const fmtMoney = (n: number, cur = 'CZK') => n.toLocaleString('cs-CZ', { style: 'currency', currency: cur, maximumFractionDigits: n < 100 ? 2 : 0 })
+export const fmtMoney = (n: number, cur = 'CZK') => n.toLocaleString('cs-CZ', { style: 'currency', currency: cur, maximumFractionDigits: n < 100 && n % 1 ? 2 : 0, minimumFractionDigits: 0 })
 export const fmtPct = (n: number) => (n * 100).toLocaleString('cs-CZ', { maximumFractionDigits: 1 }) + ' %'
 export const fmtDate = (unix: number) => new Date(unix * 1000).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' })
 export function fmtAgo(unix: number) {
