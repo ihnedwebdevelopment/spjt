@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { I, PageHead } from '../ui'
 
 const LINKS = [
+  { to: '/admin/recenze', icon: 'star', title: 'Recenze', text: 'Schválení recenzí od zákazníků, odpovědi, odkaz pro zákazníky' },
   { to: '/admin/realizace', icon: 'photo', title: 'Realizace', text: 'Fotky zakázek, dvojice před / po, pořadí v galerii' },
   { to: '/admin/aktuality', icon: 'doc', title: 'Aktuality a rady', text: 'Články na web – pomáhají být vidět ve vyhledávání' },
   { to: '/admin/sluzby', icon: 'wrench', title: 'Služby', text: 'Texty, fotky a SEO stránek jednotlivých služeb' },

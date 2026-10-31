@@ -67,6 +67,7 @@ Mobilní administrace pro majitele: na telefonu spodní lišta, na počítači b
 | **Obsah → SEO stránek** | titulky a popisy stránek s náhledem výsledku v Googlu, kontrola indexace |
 | **Google → Search Console** | kliknutí, zobrazení, CTR a pozice po dnech s porovnáním s předchozím obdobím, hledané výrazy, stránky, zařízení, odeslání sitemapy, kontrola indexace |
 | **Google → Google Ads** | útrata, kliky, konverze, cena za klik a konverzi, graf po dnech, zapnutí / pozastavení kampaní, změna denního rozpočtu, „Mám plno – pozastavit vše“, hledané výrazy z reklam |
+| **Obsah → Recenze** | recenze od zákazníků z webu čekají na schválení (Zveřejnit / Nezveřejňovat / Smazat), veřejná odpověď pod recenzí, zkrácení jména, tlačítko „Poslat odkaz“ na `/recenze` pro zákazníka po zakázce, e-mail o nové recenzi |
 | **Nastavení** | telefon a údaje na webu, e-mail pro upozornění, změna hesla, odhlášení všech zařízení, nahrané fotky |
 
 Obsah, který se v administraci nezmění, zůstává ze `src/data/*.ts`. Při prvním přihlášení se současné realizace,

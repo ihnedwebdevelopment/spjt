@@ -40,6 +40,13 @@ export const STATUS: Record<InquiryStatus, string> = {
   new: 'Nová', contacted: 'Kontaktováno', offer: 'Nabídka odeslána', won: 'Zakázka', lost: 'Nevyšlo', archived: 'Archiv',
 }
 
+export type ReviewStatus = 'pending' | 'approved' | 'hidden'
+export const REVIEW_STATUS: Record<ReviewStatus, string> = { pending: 'Ke schválení', approved: 'Na webu', hidden: 'Skrytá' }
+export interface AdminReview {
+  id: number; name: string; place: string; service: string; rating: number; text: string; email: string
+  status: ReviewStatus; reply: string; createdAt: number; approvedAt: number | null
+}
+
 export interface PostRow {
   id: number; slug: string; title: string; excerpt: string; body?: string; cover: string | null; published: number
   published_at: number | null; updated_at: number; seo_title?: string | null; seo_description?: string | null

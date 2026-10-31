@@ -34,6 +34,7 @@ export default function Header() {
           <Link to="/#sluzby">Služby</Link>
           <NavLink to="/vizualizator">Vyzkoušet barvy</NavLink>
           <Link to="/#pristup">O mně</Link>
+          <NavLink to="/recenze">Recenze</NavLink>
           <NavLink to="/kontakt">Kontakt</NavLink>
           <a className="nav-phone" href={`tel:${BUSINESS.phoneTel}`}><Icon name="phone" size={16} />{BUSINESS.phoneDisplay}</a>
           <Link className="cta" to="/kontakt">Nezávazně poptat</Link>

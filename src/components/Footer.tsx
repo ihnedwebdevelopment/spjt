@@ -34,6 +34,7 @@ export default function Footer() {
               <li><a href={`tel:${BUSINESS.phoneTel}`}>{BUSINESS.phoneDisplay}</a></li>
               <li><Link to="/vizualizator">Vyzkoušet barvy</Link></li>
               <li><Link to="/#pristup">O mně</Link></li>
+              <li><Link to="/recenze">Recenze zákazníků</Link></li>
               <li>{BUSINESS.area}</li>
               <li><Link to="/kontakt">Nezávazná poptávka</Link></li>
             </ul>

@@ -16,6 +16,18 @@ export interface PostSummary {
   publishedAt: number
 }
 
+export interface Review {
+  id: number
+  name: string
+  place: string
+  service: string
+  rating: number
+  text: string
+  /** veřejná odpověď majitele */
+  reply: string
+  date: number
+}
+
 export type Business = typeof BUSINESS
 
 interface ApiContent {
@@ -25,6 +37,7 @@ interface ApiContent {
   posts?: PostSummary[]
   business?: Partial<Business>
   pageSeo?: Record<string, { title?: string; description?: string }>
+  reviews?: Review[]
 }
 
 export interface ContentState {
@@ -34,6 +47,7 @@ export interface ContentState {
   faqs: [string, string][]
   posts: PostSummary[]
   pageSeo: Record<string, { title?: string; description?: string }>
+  reviews: Review[]
   /** obsah dorazil ze serveru */
   live: boolean
 }
@@ -46,6 +60,7 @@ const DEFAULTS: ContentState = {
   faqs: FAQS,
   posts: [],
   pageSeo: {},
+  reviews: [],
   live: false,
 }
 
@@ -61,6 +76,7 @@ function merge(api: ApiContent): Partial<ContentState> {
     faqs: api.faqs?.length ? api.faqs.map((f) => [f.q, f.a] as [string, string]) : FAQS,
     posts: api.posts ?? [],
     pageSeo: api.pageSeo ?? {},
+    reviews: api.reviews ?? [],
   }
 }
 

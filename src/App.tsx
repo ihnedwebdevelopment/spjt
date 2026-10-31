@@ -7,6 +7,7 @@ import ContactPage from './pages/ContactPage'
 import ServicePage from './pages/ServicePage'
 import { useContent } from './content/store'
 import PostsPage from './pages/PostsPage'
+import ReviewsPage from './pages/ReviewsPage'
 
 const Designer = lazy(() => import('./pages/Designer'))
 const PostPage = lazy(() => import('./pages/PostPage'))
@@ -42,6 +43,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/kontakt" element={<ContactPage />} />
+        <Route path="/recenze" element={<ReviewsPage />} />
         {services.map((s) => <Route key={s.slug} path={'/' + s.slug} element={<ServicePage s={s} />} />)}
         <Route
           path="/vizualizator"

@@ -16,6 +16,7 @@ const PostEditor = lazy(() => import('./pages/PostEditor'))
 const Services = lazy(() => import('./pages/Services'))
 const Faqs = lazy(() => import('./pages/Faqs'))
 const Seo = lazy(() => import('./pages/Seo'))
+const Reviews = lazy(() => import('./pages/Reviews'))
 const GoogleHub = lazy(() => import('./pages/GoogleHub'))
 const SearchConsole = lazy(() => import('./pages/SearchConsole'))
 const Ads = lazy(() => import('./pages/Ads'))
@@ -161,11 +162,12 @@ function Setup({ configured, onDone }: { configured: boolean; onDone: () => void
 const NAV = [
   { to: '/admin', icon: 'home', label: 'Přehled', end: true, mobile: true },
   { to: '/admin/poptavky', icon: 'inbox', label: 'Poptávky', mobile: true },
-  { to: '/admin/obsah', icon: 'layers', label: 'Obsah', mobile: true, match: ['/admin/obsah', '/admin/realizace', '/admin/aktuality', '/admin/sluzby', '/admin/dotazy', '/admin/seo'] },
+  { to: '/admin/obsah', icon: 'layers', label: 'Obsah', mobile: true, match: ['/admin/obsah', '/admin/recenze', '/admin/realizace', '/admin/aktuality', '/admin/sluzby', '/admin/dotazy', '/admin/seo'] },
   { to: '/admin/google', icon: 'chart', label: 'Google', mobile: true, match: ['/admin/google', '/admin/search-console', '/admin/reklamy'] },
   { to: '/admin/nastaveni', icon: 'settings', label: 'Nastavení', mobile: true },
 ]
 const SUB = [
+  { to: '/admin/recenze', icon: 'star', label: 'Recenze' },
   { to: '/admin/realizace', icon: 'photo', label: 'Realizace' },
   { to: '/admin/aktuality', icon: 'doc', label: 'Aktuality' },
   { to: '/admin/sluzby', icon: 'wrench', label: 'Služby' },
@@ -178,8 +180,9 @@ const SUB = [
 function Shell({ email, onLogout }: { email: string; onLogout: () => void }) {
   const { pathname } = useLocation()
   const [newCount, setNewCount] = useState(0)
+  const [reviewCount, setReviewCount] = useState(0)
   useEffect(() => {
-    api<{ newInquiries: number }>('admin/stats').then((s) => setNewCount(s.newInquiries)).catch(() => {})
+    api<{ newInquiries: number; pendingReviews?: number }>('admin/stats').then((s) => { setNewCount(s.newInquiries); setReviewCount(s.pendingReviews ?? 0) }).catch(() => {})
   }, [pathname])
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
   const logout = async () => {
@@ -199,7 +202,7 @@ function Shell({ email, onLogout }: { email: string; onLogout: () => void }) {
             </NavLink>
           ))}
           <hr />
-          {SUB.map((n) => <NavLink key={n.to} to={n.to} className="sub"><I n={n.icon} s={20} />{n.label}</NavLink>)}
+          {SUB.map((n) => <NavLink key={n.to} to={n.to} className="sub"><I n={n.icon} s={20} />{n.label}{n.to === '/admin/recenze' && reviewCount > 0 && <span className="adm-badge">{reviewCount}</span>}</NavLink>)}
         </nav>
         <div className="adm-side-foot">
           <a href="/" target="_blank" rel="noopener"><I n="external" s={18} />Otevřít web</a>
@@ -220,6 +223,8 @@ function Shell({ email, onLogout }: { email: string; onLogout: () => void }) {
             <Route path="/admin/sluzby" element={<Services />} />
             <Route path="/admin/dotazy" element={<Faqs />} />
             <Route path="/admin/seo" element={<Seo />} />
+            <Route path="/admin/recenze" element={<Reviews />} />
+            <Route path="/admin/recenze/:id" element={<Reviews />} />
             <Route path="/admin/google" element={<GoogleHub />} />
             <Route path="/admin/search-console" element={<SearchConsole />} />
             <Route path="/admin/reklamy" element={<Ads />} />
@@ -232,7 +237,7 @@ function Shell({ email, onLogout }: { email: string; onLogout: () => void }) {
       <nav className="adm-tabs" aria-label="Hlavní navigace">
         {NAV.filter((n) => n.mobile).map((n) => (
           <NavLink key={n.to} to={n.to} end={n.end} className={isActive(n) ? 'active' : ''}>
-            <span className="adm-tab-icon"><I n={n.icon} />{n.to === '/admin/poptavky' && newCount > 0 && <span className="adm-badge">{newCount}</span>}</span>
+            <span className="adm-tab-icon"><I n={n.icon} />{n.to === '/admin/poptavky' && newCount > 0 && <span className="adm-badge">{newCount}</span>}{n.to === '/admin/obsah' && reviewCount > 0 && <span className="adm-badge">{reviewCount}</span>}</span>
             {n.label}
           </NavLink>
         ))}

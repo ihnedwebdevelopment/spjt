@@ -2,6 +2,7 @@ import Hero from '../components/Hero'
 import FinishLab from '../components/FinishLab'
 import ContactSection from '../components/ContactSection'
 import Faq from '../components/Faq'
+import Reviews from '../components/Reviews'
 import { Gallery, Process, Services, Visualizer } from '../components/Sections'
 import { usePageMeta } from '../lib/seo'
 import { LatestPosts } from './PostsPage'
@@ -20,6 +21,7 @@ export default function Home() {
       <FinishLab />
       <Visualizer />
       <Process />
+      <Reviews />
       <LatestPosts />
       <Faq />
       <ContactSection />

@@ -14,7 +14,7 @@ type Collection = (typeof COLLECTIONS)[number]
 const isCollection = (c: string): c is Collection => (COLLECTIONS as readonly string[]).includes(c)
 
 /** Statické stránky webu pro sitemapu (služby se doplní z databáze). */
-const STATIC_PAGES: [string, number][] = [['/', 1], ['/vizualizator', 0.9], ['/kontakt', 0.9]]
+const STATIC_PAGES: [string, number][] = [['/', 1], ['/vizualizator', 0.9], ['/kontakt', 0.9], ['/recenze', 0.6]]
 const DEFAULT_SERVICE_SLUGS = [
   'malirske-prace-jihlava', 'malovani-bytu-jihlava', 'dekorativni-sterky-jihlava',
   'fasady-jihlava', 'nateracske-prace-jihlava', 'opravy-zdi-jihlava',
@@ -46,6 +46,7 @@ async function api(req: Request, env: Env, ctx: ExecutionContext, url: URL): Pro
   if (p === '/api/content' && m === 'GET') return publicContent(env)
   if (p.startsWith('/api/posts/') && m === 'GET') return publicPost(env, decodeURIComponent(p.slice(11)))
   if (p === '/api/inquiry' && m === 'POST') return createInquiry(req, env, ctx)
+  if (p === '/api/review' && m === 'POST') return createReview(req, env, ctx)
   if (p === '/api/google/callback' && m === 'GET') {
     if (!(await isAdmin(env, req))) return Response.redirect(url.origin + '/admin', 302)
     return G.finishOAuth(env, req)
@@ -80,6 +81,7 @@ async function api(req: Request, env: Env, ctx: ExecutionContext, url: URL): Pro
     case 'posts': return posts(req, env, seg)
     case 'inquiries': return inquiries(req, env, seg)
     case 'inquiry-photo': return inquiryPhoto(env, url)
+    case 'reviews': return reviews(req, env, seg)
     case 'settings': return settings(req, env)
     case 'media': return adminMedia(req, env, url)
     case 'google': {
@@ -133,16 +135,18 @@ async function api(req: Request, env: Env, ctx: ExecutionContext, url: URL): Pro
 interface Business { name?: string; tagline?: string; phoneDisplay?: string; phoneTel?: string; area?: string; email?: string }
 
 async function publicContent(env: Env) {
-  const [rows, posts, business, pageSeo] = await Promise.all([
+  const [rows, posts, business, pageSeo, revs] = await Promise.all([
     env.DB.prepare('SELECT collection, id, data FROM items WHERE published = 1 ORDER BY collection, sort, id').all<{ collection: string; id: string; data: string }>(),
     env.DB.prepare('SELECT slug, title, excerpt, cover, published_at FROM posts WHERE published = 1 AND published_at <= ? ORDER BY published_at DESC LIMIT 50').bind(now()).all(),
     getSetting<Business>(env, 'business'),
     getSetting<Record<string, { title?: string; description?: string }>>(env, 'pageSeo'),
+    env.DB.prepare("SELECT * FROM reviews WHERE status = 'approved' ORDER BY COALESCE(approved_at, created_at) DESC LIMIT 100").all<Record<string, any>>()
+      .catch(() => ({ results: [] as Record<string, any>[] })), // tabulka ještě není (před migrací)
   ])
   const out: Record<string, unknown[]> = { realizace: [], services: [], faqs: [] }
   for (const r of rows.results) out[r.collection]?.push({ ...JSON.parse(r.data), id: r.id })
   return json(
-    { ...out, posts: posts.results.map(postSummary), business: business ?? {}, pageSeo: pageSeo ?? {} },
+    { ...out, posts: posts.results.map(postSummary), business: business ?? {}, pageSeo: pageSeo ?? {}, reviews: revs.results.map(reviewPublic) },
     { headers: { 'cache-control': 'public, max-age=30, stale-while-revalidate=300' } },
   )
 }
@@ -314,6 +318,85 @@ async function inquiryPhoto(env: Env, url: URL) {
   h.set('x-content-type-options', 'nosniff')
   return new Response(obj.body, { headers: h })
 }
+
+/* ════════════════ recenze ════════════════ */
+const REVIEW_STATUSES = ['pending', 'approved', 'hidden'] as const
+
+async function createReview(req: Request, env: Env, ctx: ExecutionContext) {
+  const b = await readJson<Record<string, unknown>>(req)
+  if (str(b.website)) return json({ ok: true }) // past na roboty
+  const name = str(b.name, 80)
+  const place = str(b.place, 80)
+  const service = str(b.service, 80)
+  const email = str(b.email, 160)
+  const text = str(b.text, 2000)
+  const rating = Math.round(Number(b.rating))
+  if (!(rating >= 1 && rating <= 5)) throw new HttpError(400, 'Vyberte prosím počet hvězdiček.')
+  if (name.length < 2) throw new HttpError(400, 'Napište prosím své jméno (stačí křestní a první písmeno příjmení).')
+  if (text.length < 10) throw new HttpError(400, 'Napište prosím aspoň jednu větu o tom, jak jste byli spokojeni.')
+  if ((text.match(/https?:\/\/|www\./gi) ?? []).length > 1) throw new HttpError(400, 'Recenze nesmí obsahovat odkazy.')
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'E-mail nevypadá správně.')
+
+  const ipHash = await sha256('rev:' + clientIp(req))
+  const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM reviews WHERE ip_hash = ? AND created_at > ?').bind(ipHash, now() - 86400).first<{ n: number }>()
+  if ((recent?.n ?? 0) >= 3) throw new HttpError(429, 'Z tohoto zařízení už dnes několik recenzí přišlo. Děkujeme!')
+
+  const res = await env.DB.prepare('INSERT INTO reviews (name, place, service, rating, text, email, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .bind(name, place, service, rating, text, email, ipHash).run()
+  const id = res.meta.last_row_id
+
+  const notify = await getSetting<{ email?: string }>(env, 'notify')
+  if (notify?.email) {
+    const site = env.SITE_URL.replace(/\/$/, '')
+    ctx.waitUntil(sendMail(
+      env, notify.email,
+      `Nová recenze ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} od ${name}`,
+      [`${name}${place ? ', ' + place : ''}${service ? ' – ' + service : ''}`, `Hodnocení: ${rating}/5`, '', text, '',
+        'Na webu se zobrazí, až ji schválíte:', `${site}/admin/recenze/${id}`].join('\n'),
+      email || undefined,
+    ))
+  }
+  return json({ ok: true })
+}
+
+async function reviews(req: Request, env: Env, seg: string[]) {
+  const id = Number(seg[1])
+  if (!seg[1] && req.method === 'GET') {
+    const r = await env.DB.prepare('SELECT * FROM reviews ORDER BY created_at DESC LIMIT 1000').all<Record<string, any>>()
+    return json(r.results.map(reviewAdmin))
+  }
+  if (!id) throw new HttpError(404, 'Recenze nenalezena.')
+  if (req.method === 'PATCH') {
+    const b = await readJson<{ status?: string; reply?: string; name?: string; place?: string }>(req)
+    const status = (REVIEW_STATUSES as readonly string[]).includes(b.status ?? '') ? b.status! : null
+    await env.DB.prepare(`UPDATE reviews SET
+        status = COALESCE(?1, status),
+        approved_at = CASE WHEN ?1 = 'approved' AND approved_at IS NULL THEN unixepoch() ELSE approved_at END,
+        reply = COALESCE(?2, reply), name = COALESCE(?3, name), place = COALESCE(?4, place)
+      WHERE id = ?5`)
+      .bind(status, typeof b.reply === 'string' ? b.reply.trim().slice(0, 2000) : null,
+        typeof b.name === 'string' && b.name.trim().length >= 2 ? b.name.trim().slice(0, 80) : null,
+        typeof b.place === 'string' ? b.place.trim().slice(0, 80) : null, id).run()
+    const r = await env.DB.prepare('SELECT * FROM reviews WHERE id = ?').bind(id).first<Record<string, any>>()
+    if (!r) throw new HttpError(404, 'Recenze nenalezena.')
+    return json(reviewAdmin(r))
+  }
+  if (req.method === 'DELETE') {
+    await env.DB.prepare('DELETE FROM reviews WHERE id = ?').bind(id).run()
+    return json({ ok: true })
+  }
+  throw new HttpError(405, 'Nepodporovaná operace.')
+}
+
+/** Na web jde jen to, co je vidět – bez e-mailu a IP. */
+const reviewPublic = (r: Record<string, any>) => ({
+  id: r.id, name: r.name, place: r.place, service: r.service, rating: r.rating, text: r.text,
+  reply: r.reply, date: r.approved_at ?? r.created_at,
+})
+const reviewAdmin = (r: Record<string, any>) => ({
+  id: r.id, name: r.name, place: r.place, service: r.service, rating: r.rating, text: r.text, email: r.email,
+  status: r.status, reply: r.reply, createdAt: r.created_at, approvedAt: r.approved_at,
+})
 
 /* ════════════════ přihlášení ════════════════ */
 /** Přihlašovací jméno: uživatelské jméno (např. admin268) nebo e-mail. */
@@ -578,17 +661,18 @@ async function settings(req: Request, env: Env) {
 
 async function stats(env: Env) {
   const t = now()
-  const [inq, newInq, week, posts, real, latest] = await Promise.all([
+  const [inq, newInq, week, posts, real, latest, pendingRev] = await Promise.all([
     env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries').first<{ n: number }>(),
     env.DB.prepare("SELECT COUNT(*) AS n FROM inquiries WHERE status = 'new'").first<{ n: number }>(),
     env.DB.prepare('SELECT COUNT(*) AS n FROM inquiries WHERE created_at > ?').bind(t - 7 * 86400).first<{ n: number }>(),
     env.DB.prepare('SELECT COUNT(*) AS n FROM posts WHERE published = 1').first<{ n: number }>(),
     env.DB.prepare("SELECT COUNT(*) AS n FROM items WHERE collection = 'realizace'").first<{ n: number }>(),
     env.DB.prepare('SELECT id, name, phone, message, status, created_at FROM inquiries ORDER BY created_at DESC LIMIT 5').all(),
+    env.DB.prepare("SELECT COUNT(*) AS n FROM reviews WHERE status = 'pending'").first<{ n: number }>().catch(() => null),
   ])
   return json({
     inquiries: inq?.n ?? 0, newInquiries: newInq?.n ?? 0, inquiriesWeek: week?.n ?? 0,
-    posts: posts?.n ?? 0, realizace: real?.n ?? 0, latest: latest.results,
+    posts: posts?.n ?? 0, realizace: real?.n ?? 0, latest: latest.results, pendingReviews: pendingRev?.n ?? 0,
   })
 }
 

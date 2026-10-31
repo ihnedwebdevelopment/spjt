@@ -3,7 +3,7 @@ import { type AdsReport, type GoogleStatus, type GscReport, STATUS, type Inquiry
 import { Delta, ErrorBox, I, Loading, PageHead, Stat, useLoad } from '../ui'
 
 interface Stats {
-  inquiries: number; newInquiries: number; inquiriesWeek: number; posts: number; realizace: number
+  inquiries: number; newInquiries: number; inquiriesWeek: number; posts: number; realizace: number; pendingReviews?: number
   latest: { id: number; name: string; phone: string; message: string; status: InquiryStatus; created_at: number }[]
 }
 
@@ -30,6 +30,11 @@ export default function Dashboard() {
       </div>
 
       {stats.error && <ErrorBox error={stats.error} retry={stats.reload} />}
+      {!!s?.pendingReviews && (
+        <Link to="/admin/recenze" className="adm-card adm-alert">
+          <I n="star" /><span><b>{s.pendingReviews === 1 ? '1 nová recenze čeká' : s.pendingReviews < 5 ? `${s.pendingReviews} nové recenze čekají` : `${s.pendingReviews} nových recenzí čeká`} na schválení</b><small>Na webu se {s.pendingReviews === 1 ? 'objeví, až ji' : 'objeví, až je'} zveřejníte.</small></span><I n="next" s={20} />
+        </Link>
+      )}
       <section className="adm-stats">
         <Stat label="Nové poptávky" value={s ? fmtNum(s.newInquiries) : '–'} onClick={() => nav('/admin/poptavky')}>
           {s && <small>{s.inquiriesWeek} za posledních 7 dní</small>}
