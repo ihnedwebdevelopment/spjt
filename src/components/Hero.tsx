@@ -5,6 +5,7 @@ import { useBusiness } from '../content/store'
 import Icon from './Icon'
 import photoUrl from '../images/interier-po.webp'
 import maskUrl from '../images/interier-po-stena.png'
+import { RatingBadge } from './Reviews'
 import { composite, hexToLab, rgbToLab, type Layer, type Photo } from '../photo/recolor'
 
 /** Odstíny ve vzorníku. První je současný stav stěny na fotce. */
@@ -143,6 +144,7 @@ export default function Hero() {
             <a href={`tel:${BUSINESS.phoneTel}`}><Icon name="phone" size={16} />{BUSINESS.phoneDisplay}</a>
             <span>Voláte přímo mně. Nabídku pošlu do dvou dnů, zdarma.</span>
           </p>
+          <RatingBadge />
         </div>
 
         <div className="hero-stage">

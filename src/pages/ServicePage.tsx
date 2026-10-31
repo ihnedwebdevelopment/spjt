@@ -4,6 +4,7 @@ import { useBusiness, useContent } from '../content/store'
 import { GalleryCard } from '../components/Sections'
 import ContactSection from '../components/ContactSection'
 import Faq from '../components/Faq'
+import { ServiceReviews } from '../components/Reviews'
 import Icon from '../components/Icon'
 import { usePageMeta } from '../lib/seo'
 
@@ -52,6 +53,8 @@ export default function ServicePage({ s }: { s: Service }) {
           </div>
         </section>
       )}
+
+      <ServiceReviews service={s.title} />
 
       <section className="section dark">
         <div className="wrap try-band">
